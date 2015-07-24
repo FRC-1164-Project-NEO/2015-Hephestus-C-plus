@@ -32,16 +32,27 @@ private:
 		rearLeft = new CANJaguar(6);
 		rearRight = new CANJaguar(4);
 
+		frontLeft->EnableControl();
+		frontRight->EnableControl();
+		rearLeft->EnableControl();
+		rearRight->EnableControl();
+
 		shoulderStick= new Joystick(0);
 		limitswitchtop= new DigitalInput(1);
 		limitswitchbottom= new DigitalInput(1);
 		lw = LiveWindow::GetInstance();
 		shoulderMotor = new CANJaguar(3);
-		Drive = new RobotDrive(frontLeft,frontRight,rearLeft,rearRight);
+		Drive = new RobotDrive(frontLeft, frontRight, rearLeft, rearRight);
 		driveStick = new Joystick(1);
 		gripper = new Solenoid(1);
 		gripper2 = new Solenoid(0);
 		armExtender = new CANJaguar(5);
+
+		shoulderMotor->EnableControl();
+		armExtender->EnableControl();
+
+		Drive->SetInvertedMotor(RobotDrive::kFrontRightMotor, true);
+		Drive->SetInvertedMotor(RobotDrive::kRearRightMotor, true);
 
 	}
 
@@ -81,12 +92,11 @@ private:
 				POV=0;
 			}
 		}
-		shoulderMotor->Set(shoulderStick-> GetY());
+		shoulderMotor->Set((shoulderStick-> GetY())/10);
 
 		Drive->SetSafetyEnabled(false);
 
-		//Drive->MecanumDrive_Cartesian(driveStick->GetX(),driveStick->GetY(),driveStick->GetTwist(),0);
-		Drive->MecanumDrive_Cartesian(.5, .5, .5, 0);
+		Drive->MecanumDrive_Cartesian(driveStick->GetX(),driveStick->GetY(),driveStick->GetTwist(),0);
 
 		gripper->Set(shoulderStick->GetRawButton(1));
 
