@@ -23,13 +23,13 @@ private:
 	CANJaguar *frontRight;
 	CANJaguar *rearLeft;
 	CANJaguar *rearRight;
-	int POV;
+	//int POV;
 
 	void RobotInit()
 	{
 		frontLeft = new CANJaguar(8);
-		frontRight = new CANJaguar(7);
-		rearLeft = new CANJaguar(6);
+		frontRight = new CANJaguar(6);
+		rearLeft = new CANJaguar(7);
 		rearRight = new CANJaguar(4);
 
 		frontLeft->EnableControl();
@@ -39,7 +39,7 @@ private:
 
 		shoulderStick= new Joystick(0);
 		limitswitchtop= new DigitalInput(1);
-		limitswitchbottom= new DigitalInput(1);
+		limitswitchbottom= new DigitalInput(0);
 		lw = LiveWindow::GetInstance();
 		shoulderMotor = new CANJaguar(3);
 		Drive = new RobotDrive(frontLeft, frontRight, rearLeft, rearRight);
@@ -53,6 +53,8 @@ private:
 
 		Drive->SetInvertedMotor(RobotDrive::kFrontRightMotor, true);
 		Drive->SetInvertedMotor(RobotDrive::kRearRightMotor, true);
+		Drive->SetInvertedMotor(RobotDrive::kRearLeftMotor, false);
+		Drive->SetInvertedMotor(RobotDrive::kFrontLeftMotor, false);
 
 	}
 
@@ -72,7 +74,7 @@ private:
 	}
 
 	void TeleopPeriodic()
-	{
+	{/*
 		if(shoulderStick->GetPOV()==0||shoulderStick->GetPOV()==45||shoulderStick->GetPOV()==315 ){
 				POV=1;
 		}
@@ -91,16 +93,22 @@ private:
 			if(POV==-1){
 				POV=0;
 			}
-		}
-		shoulderMotor->Set((shoulderStick-> GetY())/10);
+	}*/
+			bool GripperTest;
+			GripperTest=(shoulderStick->GetRawButton(7));
+			if (GripperTest == true){
+
+			}
+		shoulderMotor->Set((shoulderStick->GetY())/3);
 
 		Drive->SetSafetyEnabled(false);
 
 		Drive->MecanumDrive_Cartesian(driveStick->GetX(),driveStick->GetY(),driveStick->GetTwist(),0);
 
-		gripper->Set(shoulderStick->GetRawButton(1));
+		gripper->Set(shoulderStick->GetRawButton(7));
+		gripper2->Set(shoulderStick->GetRawButton(0));
 
-		armExtender->Set(POV);
+		armExtender->Set(shoulderStick->GetZ());
 
 
 	}
