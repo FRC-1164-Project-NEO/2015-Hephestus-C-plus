@@ -23,7 +23,6 @@ private:
 	CANJaguar *frontRight;
 	CANJaguar *rearLeft;
 	CANJaguar *rearRight;
-	//int POV;
 
 	void RobotInit()
 	{
@@ -56,6 +55,7 @@ private:
 		Drive->SetInvertedMotor(RobotDrive::kRearLeftMotor, false);
 		Drive->SetInvertedMotor(RobotDrive::kFrontLeftMotor, false);
 
+		Drive->SetSafetyEnabled(false);
 	}
 
 	void AutonomousInit()
@@ -74,43 +74,22 @@ private:
 	}
 
 	void TeleopPeriodic()
-	{/*
-		if(shoulderStick->GetPOV()==0||shoulderStick->GetPOV()==45||shoulderStick->GetPOV()==315 ){
-				POV=1;
-		}
-		else if(shoulderStick->GetPOV()==180||shoulderStick->GetPOV()==135||shoulderStick->GetPOV()==225){
-				POV=-1;
-		}
-		else if(shoulderStick->GetPOV()==-1||shoulderStick->GetPOV()==270||shoulderStick->GetPOV()==90){
-				POV=0;
-		}
-		if(limitswitchtop->Get()){
-			if(POV==1){
-				POV=0;
-			}
-		}
-		if(limitswitchbottom->Get()){
-			if(POV==-1){
-				POV=0;
-			}
-	}*/
-			bool GripperTest;
-			GripperTest=(shoulderStick->GetRawButton(7));
-			if (GripperTest == true){
+	{
+		bool gripperTest;
 
-			}
-		shoulderMotor->Set((shoulderStick->GetY())/3);
+		if (shoulderStick->GetRawButton(7) == true)
+			gripperTest = true;
+		else
+			gripperTest = false;
 
-		Drive->SetSafetyEnabled(false);
+		shoulderMotor->Set((shoulderStick->GetY())/2);
 
-		Drive->MecanumDrive_Cartesian(driveStick->GetX(),driveStick->GetY(),driveStick->GetTwist(),0);
+		Drive->MecanumDrive_Cartesian(driveStick->GetX()/2,driveStick->GetY()/2,driveStick->GetTwist()/2,0);
 
-		gripper->Set(shoulderStick->GetRawButton(7));
-		gripper2->Set(shoulderStick->GetRawButton(0));
+		gripper->Set(gripperTest);
+		gripper2->Set(!gripperTest);
 
-		armExtender->Set(shoulderStick->GetZ());
-
-
+		armExtender->Set(shoulderStick->GetZ()*0.50);
 	}
 
 	void TestPeriodic()
